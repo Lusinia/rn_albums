@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { COLORS, ROUTES, WINDOW_WIDTH } from '../constants';
 import { getAlbums } from '../actions/fetchData';
-import { setError } from '../actions/root';
 import Photo from '../components/Photo';
 
 class Gallery extends Component {
@@ -84,5 +83,5 @@ const mapStateToProps = (state) => ({
   albums: state.albums.albums,
 });
 
-export default connect(mapStateToProps, { getAlbums, setError })(Gallery);
+export default connect(mapStateToProps, { getAlbums })(Gallery);
 

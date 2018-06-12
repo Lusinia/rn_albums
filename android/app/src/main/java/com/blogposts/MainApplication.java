@@ -4,9 +4,7 @@ import com.reactnativenavigation.NavigationApplication;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
 import com.imagepicker.ImagePickerPackage;
-import org.gamega.RNAsyncStoragePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,9 +18,7 @@ public class MainApplication extends NavigationApplication {
 
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
-        new RNFetchBlobPackage(),
-        new ImagePickerPackage(),
-        new RNAsyncStoragePackage()
+        new ImagePickerPackage()
     );
   }
 

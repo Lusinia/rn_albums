@@ -7,5 +7,6 @@ export const COLORS = {
   DARK_TRANSPARENT: 'rgba(0,0,0,.7)',
   CHALICE: 'rgba(163, 163, 163 ,.5)',
   BLACK: '#000000',
+  RED: '#E52A65',
   GOLDEN:'#E48911'
 };

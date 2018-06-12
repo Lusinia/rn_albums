@@ -4,9 +4,10 @@ import { CENTER_STYLE, PADDING_MIXIN, TEXT_SIZE, WINDOW_WIDTH } from '../constan
 import { connect } from 'react-redux';
 import { COLORS } from '../constants/colors';
 import PropTypes from 'prop-types';
-import { setError } from '../actions/root';
 import { ROUTES } from '../constants/routes';
 import { getUser } from '../actions/fetchData';
+import { setError } from '../actions/root';
+import { ERRORS } from '../constants/errors';
 
 class Login extends Component {
   static navigatorStyle = {
@@ -26,7 +27,6 @@ class Login extends Component {
     this.sendRequest = this.sendRequest.bind(this);
   }
 
-
   startApp() {
     this.props.navigator.resetTo({
       screen: ROUTES.GALLERY,
@@ -39,7 +39,11 @@ class Login extends Component {
   async sendRequest() {
     this.setState({ isLoading: true });
     await this.props.getUser(this.state.text.trim());
-    this.setState({ isLoading: false });
+    this.setState({ isLoading: false, text: null });
+  }
+
+  isError(error) {
+    return error && error.context === ERRORS.FETCH_USER;
   }
 
   render() {
@@ -51,11 +55,13 @@ class Login extends Component {
 
         <View>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { borderColor: this.isError(this.props.error) ? COLORS.RED : COLORS.RAVEN }]}
             placeholder={'Enter user ID'}
             placeholderTextColor={COLORS.RAVEN}
+            onFocus={() => this.props.setError(null)}
             onChangeText={(text) => this.setState({ text })}
             editable={true}
+            value={this.state.text}
             underlineColorAndroid={'rgba(0,0,0,0)'}
             maxLength={40}
           />
@@ -119,9 +125,12 @@ Login.propTypes = {
   getUser: PropTypes.func,
   setError: PropTypes.func,
   userInfo: PropTypes.object,
+  error: PropTypes.object,
 };
 
 const mapStateToProps = (state) => ({
-  userInfo: state.user.userInfo
+  userInfo: state.user.userInfo,
+  error: state.root.error
 });
+
 export default connect(mapStateToProps, { getUser, setError })(Login);

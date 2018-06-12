@@ -3,6 +3,7 @@ import Axios from 'axios';
 import { BASE_URL } from '../../constants';
 import { error } from '../root';
 import { AsyncStorage } from 'react-native';
+import { ERRORS } from '../../constants/errors';
 
 
 /* Action Creator */
@@ -26,7 +27,10 @@ const fetchUserRequest = userId => dispatch => Axios.get(`${BASE_URL}/users/${us
   .then(res => {
     dispatch(fetchUserData(res.data));
   }, err => {
-    dispatch(error('FetchDataRequest', err.message));
+    dispatch(error({
+      context: ERRORS.FETCH_USER,
+      message: err.message
+    }));
   });
 
 
@@ -46,7 +50,10 @@ const fetchAlbumsRequest = userId => dispatch => Axios.get(`${BASE_URL}/users/${
       });
     });
   }, err => {
-    dispatch(error('FetchAlbumsRequest', err.message));
+    dispatch(error({
+      context: ERRORS.FETCH_ALBUMS,
+      message: err.message
+    }));
   });
 
 
@@ -82,8 +89,11 @@ const imageManipulations = (album, src) => dispatch => {
           return dispatch(imageData(updatedAlbum));
         });
       });
-    } catch (error) {
-      dispatch(error('Cannot set image to storage', error.message));
+    } catch (err) {
+      dispatch(error({
+          context: ERRORS.IMAGE_STORAGE,
+          message: err.message
+        }));
       return dispatch(imageData(updatedAlbum));
     }
   }
