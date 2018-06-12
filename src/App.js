@@ -21,7 +21,7 @@ export default class App extends Component {
     super(props);
     Navigation.startSingleScreenApp({
       screen: {
-        screen: ROUTES.GALLERY,
+        screen: ROUTES.LOGIN,
       },
       appStyle: {
         orientation: 'portrait',

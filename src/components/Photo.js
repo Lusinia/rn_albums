@@ -20,7 +20,7 @@ const Photo = (props) => {
             style={[styles.imageWrapper, { justifyContent: 'center' }]}
             source={require('../assets/photo-placeholder.png')}
           >
-            <ActivityIndicator size="large" color={COLORS.RAVEN}/>
+            <ActivityIndicator size="small" color={COLORS.CURIOUS_BLUE}/>
           </ImageBackground>
         }
       </View>

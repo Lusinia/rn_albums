@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
+
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { COLORS, ROUTES, WINDOW_WIDTH } from '../constants';
@@ -17,7 +18,7 @@ class Gallery extends Component {
   onNavigatorEvent(event) {
     if (event.id === 'willAppear') {
       this.props.getAlbums(1); // TODO - replace
-    }
+      }
   }
 
   goToAlbum(item) {

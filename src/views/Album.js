@@ -5,6 +5,9 @@ import { COLORS } from '../constants/colors';
 import { connect } from 'react-redux';
 import Photo from '../components/Photo';
 import { CENTER_STYLE, PLUS, WINDOW_WIDTH } from '../constants';
+import ImagePicker from 'react-native-image-picker';
+import { setError } from '../actions/root';
+import { setImageData } from '../actions/fetchData';
 
 
 class Album extends Component {
@@ -12,16 +15,39 @@ class Album extends Component {
     super(props);
     this.state = {
       modalVisible: false,
-      activeItem: null
+      activeItem: null,
+      addedImage: [],
+      isLoading: false
     };
     this.setModalVisible = this.setModalVisible.bind(this);
   }
+
 
   async setModalVisible(modalVisible, activeItem) {
     await this.setState({ modalVisible, activeItem });
   }
 
-  async addImageItem(item) {
+  async addImageItem() {
+    const options = {
+      title: 'Select Photo',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+    ImagePicker.launchImageLibrary(options, (response) => {
+      if (response.uri) {
+        this.setState({
+          addedImage: [...this.state.addedImage, {
+            uri: response.uri,
+            title: 'New Title'
+          }]
+        });
+        this.props.setImageData(this.props.item, response.uri);
+      } else if (response.error) {
+        this.props.setError('Error while load image.');
+      }
+    });
   }
 
   getItem(item) {
@@ -48,7 +74,7 @@ class Album extends Component {
             <TouchableHighlight
               style={styles.plusButton}
               onPress={() => {
-                this.addImageItem(!this.state.modalVisible, null);
+                this.addImageItem();
               }}>
               <Image
                 style={{ width: 100, height: 100 }}
@@ -56,9 +82,19 @@ class Album extends Component {
               />
             </TouchableHighlight>
 
+            {this.state.addedImage.length ?
+            this.state.addedImage.map(item => (
+              <Photo
+                key={`${item.id}${item.title}`}
+                title={item.title}
+                image={item.uri}
+              />))
+            : null}
+
             {this.props.item.photos.map(item => this.getItem(item))}
           </ScrollView>
         </View>}
+
 
         {this.state.activeItem &&
         <Modal
@@ -89,11 +125,6 @@ class Album extends Component {
   }
 }
 
-Album.propTypes = {
-  navigator: PropTypes.object,
-  item: PropTypes.object,
-};
-
 const styles = StyleSheet.create({
   list: {
     flexDirection: 'row',
@@ -118,7 +149,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state) => ({});
+Album.propTypes = {
+  navigator: PropTypes.object,
+  setError: PropTypes.func,
+  setImageData: PropTypes.func,
+  item: PropTypes.object,
+};
 
-export default connect(mapStateToProps)(Album);
+export default connect(null, { setImageData, setError })(Album);
 

@@ -137,6 +137,9 @@ android {
 }
 
 dependencies {
+    implementation project(':rn-async-storage')
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-fetch-blob')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:23.0.1"
     implementation 'com.android.support:appcompat-v7:26.0.2'
