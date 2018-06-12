@@ -15,15 +15,29 @@ export const fetchUserAlbums = payload => ({
   payload
 });
 
-export const fetchUserRequest = (userId, isAlbums) => (dispatch) => {
-  const url = isAlbums ? `${BASE_URL}/users/${userId}/albums` : `${BASE_URL}/users/${userId}`;
-   return Axios.get(url)
-    .then(res => {
-      isAlbums ? dispatch(fetchUserAlbums(res.data)) : dispatch(fetchUserData(res.data)) ;
-    }, err => {
-      dispatch(error('FetchDataRequest', err.message));
+
+const fetchUserRequest = userId => dispatch => Axios.get(`${BASE_URL}/users/${userId}`)
+  .then(res => {
+    dispatch(fetchUserData(res.data));
+  }, err => {
+    dispatch(error('FetchDataRequest', err.message));
+  });
+
+
+const fetchAlbumsRequest = userId => dispatch => Axios.get(`${BASE_URL}/users/${userId}/albums`)
+  .then(res => {
+    const result = [];
+
+    Promise.all(res.data.map(async(alb) => {
+      const response = await Axios.get(`${BASE_URL}/albums/${alb.id}/photos`);
+      result.push({ ...alb, photos: response.data });
+    })).then (() => {
+      dispatch(fetchUserAlbums(result));
     });
-};
+  }, err => {
+    dispatch(error('FetchAlbumsRequest', err.message));
+  });
+
 
 /* Dispatch the actionCreator */
 
@@ -32,5 +46,6 @@ export const getUser = (ID) => dispatch => {
 };
 
 export const getAlbums = (ID) => dispatch => {
-  dispatch(fetchUserRequest(ID, true));
+  dispatch(fetchAlbumsRequest(ID));
 };
+

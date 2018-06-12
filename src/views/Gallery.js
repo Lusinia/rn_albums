@@ -1,26 +1,54 @@
 import React, { Component } from 'react';
-import { SectionList, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { COLORS } from '../constants';
+import { COLORS, ROUTES, WINDOW_WIDTH } from '../constants';
+import { getAlbums } from '../actions/fetchData';
+import { setError } from '../actions/root';
+import Photo from '../components/Photo';
 
 class Gallery extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  onNavigatorEvent(event) {
+    if (event.id === 'willAppear') {
+      this.props.getAlbums(1); // TODO - replace
+    }
+  }
+
+  goToAlbum(item) {
+    this.props.navigator.push({
+      screen: ROUTES.ALBUM,
+      title: item.title,
+      passProps: {
+        item
+      }
+    });
+  }
+
+  getItem(item) {
+    const random = Math.floor(Math.random() * item.photos.length);
+    return (<TouchableHighlight
+      key={item.id}
+      onPress={() => this.goToAlbum(item)}>
+      <Photo title={item.title} image={item.photos[random].thumbnailUrl}/>
+    </TouchableHighlight>);
   }
 
   render() {
     return (
       <View style={styles.main}>
         <View>
-          <SectionList
-            renderItem={({ item }) => (<Text>Hi</Text>)}
-            sections={[]}
-            keyExtractor={({ item }) => item.id}
-            extraData={this.state}
-          />
+          {this.props.albums &&
+            <View>
+              <ScrollView contentContainerStyle={styles.list}>
+                {this.props.albums.map(item => this.getItem(item))}
+              </ScrollView>
+            </View>}
         </View>
       </View>
     );
@@ -29,25 +57,31 @@ class Gallery extends Component {
 
 Gallery.propTypes = {
   navigator: PropTypes.object,
-  setData: PropTypes.func,
-  fetchedData: PropTypes.array,
-  selectedTab: PropTypes.number,
-  selectTab: PropTypes.func,
-  setCacheData: PropTypes.func,
+  getAlbums: PropTypes.func,
+  userInfo: PropTypes.object,
+  albums: PropTypes.array,
 };
 
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    width: '100%',
-    height: '100%',
     backgroundColor: COLORS.WHITE,
-    marginBottom: 30
+    flexDirection: 'row',
+    marginBottom: 30,
+  },
+  list: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    paddingLeft: WINDOW_WIDTH * 0.01,
+    paddingRight: WINDOW_WIDTH * 0.01,
   }
 });
 
 const mapStateToProps = (state) => ({
+  userInfo: state.user.userInfo,
+  albums: state.albums.albums,
 });
 
-export default connect(mapStateToProps)(Gallery);
+export default connect(mapStateToProps, { getAlbums, setError })(Gallery);
 

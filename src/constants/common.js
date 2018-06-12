@@ -1,9 +1,10 @@
 import { Dimensions } from 'react-native';
 
 export const TEXT_SIZE = 16;
-export const TITLE_SIZE = 25;
 export const WINDOW_WIDTH = Dimensions.get('window').width;
 export const BASE_URL = 'https://jsonplaceholder.typicode.com';
+
+export const PLUS = 'https://vignette.wikia.nocookie.net/scribblenauts/images/9/97/Plus_Sign.png/revision/latest?cb=20140409201237';
 
 export const CENTER_STYLE = {
   alignItems: 'center',
