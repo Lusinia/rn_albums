@@ -1,0 +1,11 @@
+export const COLORS = {
+  RAVEN: '#737A87',
+  WHITE: '#FFFFFF',
+  CURIOUS_BLUE: '#217DDE',
+  BRIGHT_GRAY: '#39424C',
+  FIORD: '#4C5B6B',
+  DARK_TRANSPARENT: 'rgba(0,0,0,.2)',
+  CHALICE: 'rgba(163, 163, 163 ,.5)',
+  BLACK: '#000000',
+  GOLDEN:'#E48911'
+};
