@@ -5,6 +5,7 @@ export const COLORS = {
   BRIGHT_GRAY: '#39424C',
   FIORD: '#4C5B6B',
   DARK_TRANSPARENT: 'rgba(0,0,0,.7)',
+  TRANSPARENT: 'rgba(0,0,0,0)',
   CHALICE: 'rgba(163, 163, 163 ,.5)',
   BLACK: '#000000',
   RED: '#E52A65',

@@ -4,13 +4,24 @@ import PropTypes from 'prop-types';
 import { COLORS } from '../constants/colors';
 import { connect } from 'react-redux';
 import Photo from '../components/Photo';
-import { CENTER_STYLE, PLUS, WINDOW_WIDTH } from '../constants';
+import { CENTER_STYLE, PLUS, ROUTES, TEXT_SIZE, WINDOW_WIDTH } from '../constants';
 import ImagePicker from 'react-native-image-picker';
 import { setError } from '../actions/root';
 import { setImageData } from '../actions/fetchData';
 
 
 class Album extends Component {
+  static navigatorButtons = {
+    rightButtons: [
+      {
+        title: 'Logout',
+        id: 'logout',
+        buttonColor: COLORS.RED,
+        buttonFontSize: TEXT_SIZE,
+      }
+    ]
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -20,8 +31,18 @@ class Album extends Component {
       isLoading: false
     };
     this.setModalVisible = this.setModalVisible.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
 
+  onNavigatorEvent(event) {
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'logout') {
+        this.props.navigator.resetTo({
+          screen: ROUTES.LOGIN
+        });
+      }
+    }
+  }
 
   async setModalVisible(modalVisible, activeItem) {
     await this.setState({ modalVisible, activeItem });

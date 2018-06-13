@@ -3,11 +3,22 @@ import { ScrollView, StyleSheet, TouchableHighlight, View } from 'react-native';
 
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { COLORS, ROUTES, WINDOW_WIDTH } from '../constants';
+import { COLORS, ROUTES, TEXT_SIZE, WINDOW_WIDTH } from '../constants';
 import { getAlbums } from '../actions/fetchData';
 import Photo from '../components/Photo';
 
 class Gallery extends Component {
+
+  static navigatorButtons = {
+    rightButtons: [
+      {
+        title: 'Logout',
+        id: 'logout',
+        buttonColor: COLORS.RED,
+        buttonFontSize: TEXT_SIZE,
+      }
+    ]
+  };
 
   constructor(props) {
     super(props);
@@ -15,9 +26,17 @@ class Gallery extends Component {
   }
 
   onNavigatorEvent(event) {
-    if (event.id === 'willAppear') {
-      this.props.getAlbums(1); // TODO - replace
+    if (event.type === 'NavBarButtonPress') {
+      if (event.id === 'logout') {
+        this.props.navigator.resetTo({
+          screen: ROUTES.LOGIN
+        });
       }
+    }
+
+    if (event.id === 'willAppear') {
+      this.props.getAlbums(this.props.userInfo.id);
+    }
   }
 
   goToAlbum(item) {
@@ -44,11 +63,11 @@ class Gallery extends Component {
       <View style={styles.main}>
         <View>
           {this.props.albums &&
-            <View>
-              <ScrollView contentContainerStyle={styles.list}>
-                {this.props.albums.map(item => this.getItem(item))}
-              </ScrollView>
-            </View>}
+          <View>
+            <ScrollView contentContainerStyle={styles.list}>
+              {this.props.albums.map(item => this.getItem(item))}
+            </ScrollView>
+          </View>}
         </View>
       </View>
     );

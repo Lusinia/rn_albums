@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ActivityIndicator, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { CENTER_STYLE, PADDING_MIXIN, TEXT_SIZE, WINDOW_WIDTH } from '../constants';
+import { CENTER_STYLE, LOGIN_PLACEHOLDER, PADDING_MIXIN, TEXT_SIZE, WINDOW_WIDTH } from '../constants';
 import { connect } from 'react-redux';
 import { COLORS } from '../constants/colors';
 import PropTypes from 'prop-types';
@@ -21,10 +21,19 @@ class Login extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      text: null
+      text: null,
+      isUser: false
     };
     this.startApp = this.startApp.bind(this);
     this.sendRequest = this.sendRequest.bind(this);
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+  }
+
+  onNavigatorEvent(event) {
+    if (event.id === 'willAppear') {
+      this.props.getUser(null);
+      this.setState({ isUser: false });
+    }
   }
 
   startApp() {
@@ -37,32 +46,34 @@ class Login extends Component {
   }
 
   async sendRequest() {
-    this.setState({ isLoading: true });
-    await this.props.getUser(this.state.text.trim());
-    this.setState({ isLoading: false, text: null });
+    const value = this.state.text.trim();
+    if (value.length) {
+      this.setState({ isLoading: true });
+      await this.props.getUser(value);
+      this.setState({ isLoading: false, text: null, isUser: true });
+    }
   }
 
   isError(error) {
-    return error && error.context === ERRORS.FETCH_USER;
+    return !this.state.text && error && error.context === ERRORS.FETCH_USER;
   }
 
   render() {
-    if (this.props.userInfo) {
+    if (this.props.userInfo && this.state.isUser) {
       this.startApp();
     }
     return (
       <View style={styles.container}>
-
         <View>
           <TextInput
             style={[styles.input, { borderColor: this.isError(this.props.error) ? COLORS.RED : COLORS.RAVEN }]}
-            placeholder={'Enter user ID'}
+            placeholder={LOGIN_PLACEHOLDER}
             placeholderTextColor={COLORS.RAVEN}
             onFocus={() => this.props.setError(null)}
             onChangeText={(text) => this.setState({ text })}
             editable={true}
             value={this.state.text}
-            underlineColorAndroid={'rgba(0,0,0,0)'}
+            underlineColorAndroid={COLORS.TRANSPARENT}
             maxLength={40}
           />
 
