@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { CENTER_STYLE, LOGIN_PLACEHOLDER, PADDING_MIXIN, TEXT_SIZE, WINDOW_WIDTH } from '../constants';
 import { connect } from 'react-redux';
 import { COLORS } from '../constants/colors';
@@ -64,39 +73,45 @@ class Login extends Component {
     }
     return (
       <View style={styles.container}>
-        <View>
-          <TextInput
-            style={[styles.input, { borderColor: this.isError(this.props.error) ? COLORS.RED : COLORS.RAVEN }]}
-            placeholder={LOGIN_PLACEHOLDER}
-            placeholderTextColor={COLORS.RAVEN}
-            onFocus={() => this.props.setError(null)}
-            onChangeText={(text) => this.setState({ text })}
-            editable={true}
-            value={this.state.text}
-            underlineColorAndroid={COLORS.TRANSPARENT}
-            maxLength={40}
-          />
+        <ScrollView contentContainerStyle={styles.main}>
+          <View>
+            <TextInput
+              style={[styles.input, { borderColor: this.isError(this.props.error) ? COLORS.RED : COLORS.RAVEN }]}
+              placeholder={LOGIN_PLACEHOLDER}
+              placeholderTextColor={COLORS.RAVEN}
+              onFocus={() => this.props.setError(null)}
+              onChangeText={(text) => this.setState({ text })}
+              editable={true}
+              value={this.state.text}
+              underlineColorAndroid={COLORS.TRANSPARENT}
+              maxLength={40}
+            />
 
-          <View style={styles.button}>
-            <TouchableOpacity onPress={this.sendRequest}>
-              <Text style={styles.text}>
-                Login
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.button}>
+              <TouchableOpacity onPress={this.sendRequest}>
+                <Text style={styles.text}>
+                  Login
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {this.state.isLoading &&
-        <View style={styles.bottomBlock}>
-          <ActivityIndicator size="large" color={COLORS.RAVEN}/>
-        </View>
-        }
+          {this.state.isLoading &&
+          <View style={styles.bottomBlock}>
+            <ActivityIndicator size="large" color={COLORS.RAVEN}/>
+          </View>
+          }
+        </ScrollView>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+    ...CENTER_STYLE
+  },
   container: {
     flex: 1,
     justifyContent: 'space-around',
