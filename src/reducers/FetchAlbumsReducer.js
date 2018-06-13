@@ -12,7 +12,7 @@ export default function (state = initialState, action = {}) {
   switch (action.type) {
     case types.ALBUMS:
       return state.merge({
-        albums: action.payload.sort((a, b) => b.id > a.id)
+        albums: action.payload.sort((a, b) => b.id < a.id)
       });
     case types.LOCAL_IMAGE:
         updateList = [...state.albums];
@@ -21,7 +21,7 @@ export default function (state = initialState, action = {}) {
         updateList.splice(index, 1, action.payload);
       }
       return state.merge({
-        albums: updateList.sort((a, b) => b.id > a.id)
+        albums: updateList.sort((a, b) => b.id < a.id)
       });
     default:
       return state;

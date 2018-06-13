@@ -8,6 +8,7 @@ import { CENTER_STYLE, PLUS, ROUTES, TEXT_SIZE, WINDOW_WIDTH } from '../constant
 import ImagePicker from 'react-native-image-picker';
 import { setError } from '../actions/root';
 import { setImageData } from '../actions/fetchData';
+import ModalWrapper from '../components/Modal';
 
 
 class Album extends Component {
@@ -28,7 +29,10 @@ class Album extends Component {
       modalVisible: false,
       activeItem: null,
       addedImage: [],
-      isLoading: false
+      isLoading: false,
+      isOpenModal: false,
+      imageName: null,
+      isOpenInput: false
     };
     this.setModalVisible = this.setModalVisible.bind(this);
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
@@ -48,7 +52,9 @@ class Album extends Component {
     await this.setState({ modalVisible, activeItem });
   }
 
-  async addImageItem() {
+  addImageItem(name) {
+    this.setState({ isOpenInput: false });
+
     const options = {
       title: 'Select Photo',
       storageOptions: {
@@ -61,7 +67,7 @@ class Album extends Component {
         this.setState({
           addedImage: [...this.state.addedImage, {
             uri: response.uri,
-            title: 'New Title'
+            title: name
           }]
         });
         this.props.setImageData(this.props.item, response.uri);
@@ -69,6 +75,10 @@ class Album extends Component {
         this.props.setError('Error while load image.');
       }
     });
+  }
+
+  openModalWindow() {
+    this.setState({ isOpenInput: true });
   }
 
   getItem(item) {
@@ -95,7 +105,7 @@ class Album extends Component {
             <TouchableHighlight
               style={styles.plusButton}
               onPress={() => {
-                this.addImageItem();
+                this.openModalWindow();
               }}>
               <Image
                 style={{ width: 100, height: 100 }}
@@ -104,13 +114,13 @@ class Album extends Component {
             </TouchableHighlight>
 
             {this.state.addedImage.length ?
-            this.state.addedImage.map(item => (
-              <Photo
-                key={`${item.id}${item.title}`}
-                title={item.title}
-                image={item.uri}
-              />))
-            : null}
+              this.state.addedImage.map(item => (
+                <Photo
+                  key={`${item.id}${item.title}`}
+                  title={item.title}
+                  image={item.uri}
+                />))
+              : null}
 
             {this.props.item.photos.map(item => this.getItem(item))}
           </ScrollView>
@@ -140,6 +150,11 @@ class Album extends Component {
             </TouchableHighlight>
           </View>
         </Modal>
+        }
+        {this.state.isOpenInput &&
+          <ModalWrapper
+            addImage={this.addImageItem.bind(this)}
+          />
         }
       </View>
     );
