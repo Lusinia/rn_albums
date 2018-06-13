@@ -36,6 +36,7 @@ class Gallery extends Component {
 
     if (event.id === 'willAppear') {
       this.props.getAlbums(this.props.userInfo.id);
+      this.forceUpdate();
     }
   }
 
@@ -50,12 +51,14 @@ class Gallery extends Component {
   }
 
   getItem(item) {
-    const random = Math.floor(Math.random() * item.photos.length);
-    return (<TouchableHighlight
-      key={item.id}
-      onPress={() => this.goToAlbum(item)}>
-      <Photo title={item.title} image={item.photos[random].thumbnailUrl}/>
-    </TouchableHighlight>);
+    if (item.photos) {
+      const random = Math.floor(Math.random() * item.photos.length);
+      return (<TouchableHighlight
+        key={item.id}
+        onPress={() => this.goToAlbum(item)}>
+        <Photo title={item.title} image={item.photos[random].thumbnailUrl}/>
+      </TouchableHighlight>);
+    }
   }
 
   render() {

@@ -4,13 +4,16 @@ import PropTypes from 'prop-types';
 import { COLORS, PADDING_MIXIN, TEXT_SIZE, WINDOW_WIDTH } from '../constants';
 
 const Photo = (props) => {
-    return (
+  const image = props.image.split('https').length === 1 ?
+    props.image.replace('http', 'https') : props.image;
+
+  return (
       <View>
         {props.image ?
           <ImageBackground
             resizeMode='cover'
             style={[styles.imageWrapper, props.styles]}
-            source={{ uri: props.image }}
+            source={{ uri: image }}
           >
             <Text style={styles.text}>{props.title}</Text>
           </ImageBackground>
